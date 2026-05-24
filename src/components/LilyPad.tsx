@@ -5,12 +5,13 @@ interface Props {
   size?: number;
   highlight?: boolean;
   swapTarget?: boolean;
+  splash?: boolean;
   occupied?: boolean;
   flower?: boolean;
 }
 
 export const LilyPad = forwardRef<HTMLDivElement, Props>(function LilyPad(
-  { size = 110, highlight = false, swapTarget = false, occupied = false, flower = false },
+  { size = 110, highlight = false, swapTarget = false, splash = false, occupied = false, flower = false },
   ref,
 ) {
   return (
@@ -19,6 +20,15 @@ export const LilyPad = forwardRef<HTMLDivElement, Props>(function LilyPad(
       style={{ width: size, height: size }}
       className="relative flex items-center justify-center"
     >
+      {splash && (
+        <div className="pointer-events-none absolute inset-0 overflow-visible" aria-hidden>
+          <span className="water-splash-ring water-splash-ring-1" />
+          <span className="water-splash-ring water-splash-ring-2" />
+          <span className="water-splash-ring water-splash-ring-3" />
+          <span className="water-splash-drop" />
+        </div>
+      )}
+
       {highlight && (
         <span
           className="absolute inset-0 rounded-full animate-ripple"
@@ -29,20 +39,19 @@ export const LilyPad = forwardRef<HTMLDivElement, Props>(function LilyPad(
           }}
         />
       )}
+
       <motion.svg
         viewBox="0 0 120 120"
         width={size}
         height={size}
+        className={splash ? "animate-pad-dip" : undefined}
         animate={{ rotate: [0, 2, -2, 0], opacity: occupied ? 0.72 : 1 }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
         style={{ filter: "drop-shadow(0 8px 10px oklch(0.30 0.10 200 / 0.30))" }}
       >
-        {/* pad shadow under */}
         <ellipse cx="60" cy="68" rx="54" ry="50" fill="var(--lily-pad-dark)" opacity="0.85" />
         <ellipse cx="60" cy="62" rx="54" ry="50" fill="var(--lily-pad)" />
-        {/* notch (classic lily pad cut) */}
         <path d="M60 62 L60 14 A48 48 0 0 1 96 36 Z" fill="var(--pond-mid)" opacity="0.95" />
-        {/* veins */}
         <g stroke="var(--lily-pad-dark)" strokeWidth="1.2" fill="none" opacity="0.5">
           <path d="M60 62 L20 40" />
           <path d="M60 62 L18 70" />
@@ -50,7 +59,6 @@ export const LilyPad = forwardRef<HTMLDivElement, Props>(function LilyPad(
           <path d="M60 62 L86 104" />
           <path d="M60 62 L104 80" />
         </g>
-        {/* highlight sheen */}
         <ellipse cx="44" cy="48" rx="14" ry="5" fill="white" opacity="0.25" />
         {flower && (
           <g transform="translate(82 30)">

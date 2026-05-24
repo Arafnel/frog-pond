@@ -186,6 +186,96 @@
     backdrop-filter: blur(2px);
   }
 
+  .pond-playfield::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 40%,
+      oklch(1 0 0 / 0.06) 50%,
+      transparent 60%
+    );
+    background-size: 200% 100%;
+    animation: water-shimmer 8s ease-in-out infinite;
+  }
+
+  @keyframes water-shimmer {
+    0%, 100% { background-position: 120% 0; }
+    50% { background-position: -20% 0; }
+  }
+
+  @keyframes water-splash-ring {
+    0% {
+      transform: translate(-50%, -40%) scale(0.35);
+      opacity: 0.75;
+    }
+    100% {
+      transform: translate(-50%, -40%) scale(2.4);
+      opacity: 0;
+    }
+  }
+
+  .water-splash-ring {
+    position: absolute;
+    left: 50%;
+    top: 58%;
+    width: 42%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 2px solid oklch(0.98 0.02 200 / 0.85);
+    box-shadow: 0 0 12px oklch(0.92 0.06 200 / 0.35);
+  }
+
+  .water-splash-ring-1 {
+    animation: water-splash-ring 0.85s ease-out forwards;
+  }
+
+  .water-splash-ring-2 {
+    animation: water-splash-ring 0.85s ease-out 0.12s forwards;
+  }
+
+  .water-splash-ring-3 {
+    animation: water-splash-ring 0.85s ease-out 0.24s forwards;
+    border-width: 1.5px;
+  }
+
+  @keyframes water-splash-drop {
+    0% {
+      transform: translate(-50%, -20%) scale(0.2, 0.1);
+      opacity: 0.8;
+    }
+    60% {
+      opacity: 0.5;
+    }
+    100% {
+      transform: translate(-50%, -80%) scale(1.2, 0.5);
+      opacity: 0;
+    }
+  }
+
+  .water-splash-drop {
+    position: absolute;
+    left: 50%;
+    top: 52%;
+    width: 28%;
+    height: 14%;
+    border-radius: 50%;
+    background: oklch(0.95 0.04 200 / 0.55);
+    animation: water-splash-drop 0.55s ease-out forwards;
+  }
+
+  @keyframes pad-dip {
+    0%, 100% { transform: translateY(0); }
+    25% { transform: translateY(5px); }
+    55% { transform: translateY(-1px); }
+  }
+
+  .animate-pad-dip {
+    animation: pad-dip 0.55s ease-out;
+  }
+
   .select-none-game,
   .select-none-game * {
     user-select: none;

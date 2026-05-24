@@ -29,8 +29,10 @@ export function Pond() {
   const [dragPoint, setDragPoint] = useState<{ x: number; y: number } | null>(null);
   const [hoverPad, setHoverPad] = useState<string | null>(null);
   const [won, setWon] = useState(false);
+  const [splashPadId, setSplashPadId] = useState<string | null>(null);
 
   const pondRef = useRef<HTMLDivElement>(null);
+  const splashTimerRef = useRef<ReturnType<typeof setTimeout>>();
   const trayRef = useRef<HTMLDivElement>(null);
   const padRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
@@ -76,6 +78,14 @@ export function Pond() {
   useEffect(() => {
     if (won) playWin();
   }, [won]);
+
+  useEffect(() => () => clearTimeout(splashTimerRef.current), []);
+
+  function triggerSplash(padId: string) {
+    setSplashPadId(padId);
+    clearTimeout(splashTimerRef.current);
+    splashTimerRef.current = setTimeout(() => setSplashPadId(null), 900);
+  }
 
   function pointInRect(x: number, y: number, el: HTMLElement | null): boolean {
     if (!el) return false;
@@ -131,7 +141,10 @@ export function Pond() {
 
     const padId = padAtPoint(x, y);
     if (padId) {
-      if (placements[frogId] !== padId) playPop();
+      if (placements[frogId] !== padId) {
+        playPop();
+        triggerSplash(padId);
+      }
       placeOnPad(frogId, padId);
       return;
     }
@@ -151,6 +164,8 @@ export function Pond() {
     setDraggingId(null);
     setDragPoint(null);
     setHoverPad(null);
+    setSplashPadId(null);
+    clearTimeout(splashTimerRef.current);
   }
 
   function resetLevel() {
@@ -199,7 +214,7 @@ export function Pond() {
 
       <div
         ref={pondRef}
-        className="pond-playfield relative z-0 mx-4 mt-4 flex-1 overflow-hidden rounded-[40px] shadow-pop"
+        className="pond-playfield relative isolate z-0 mx-4 mt-4 flex-1 overflow-hidden rounded-[40px] shadow-pop"
       >
         <div className="relative h-full w-full">
           <svg
@@ -236,6 +251,7 @@ export function Pond() {
                   padRefs.current[pad.id] = el;
                 }}
                 size={pad.size ?? 108}
+                splash={splashPadId === pad.id}
                 highlight={hoverPad === pad.id}
                 swapTarget={
                   hoverPad === pad.id &&
@@ -328,7 +344,7 @@ export function Pond() {
               zIndex: 9999,
             }}
           >
-            <Frog color={draggingFrog.color} size={72} />
+            <Frog color={draggingFrog.color} name={draggingFrog.name} size={72} />
           </div>,
           document.body,
         )}
@@ -367,7 +383,7 @@ function TrayFrog({
       style={{ touchAction: "none", visibility: hidden ? "hidden" : "visible" }}
     >
       <div className="animate-bob">
-        <Frog color={frog.color} size={68} />
+        <Frog color={frog.color} name={frog.name} size={68} />
       </div>
     </motion.div>
   );
@@ -411,7 +427,7 @@ function PadFrog({
         style={{ touchAction: "none", visibility: hidden ? "hidden" : "visible" }}
       >
         <div className="relative">
-          <Frog color={frog.color} mood={mood} size={72} />
+          <Frog color={frog.color} name={frog.name} mood={mood} size={72} />
           <MoodPip mood={mood} />
         </div>
       </motion.div>

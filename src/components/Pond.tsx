@@ -12,6 +12,7 @@ import {
   type LevelDef,
 } from "@/game/levels";
 import pondBackground from "@/game/pond-background";
+import { playPop, playWin } from "@/game/sounds";
 import { isFrogHappy } from "@/game/rules";
 
 type Placements = Record<string, string | null>; // frogId -> padId | null
@@ -72,6 +73,10 @@ export function Pond() {
     }
   }, [allPlaced, happiness]);
 
+  useEffect(() => {
+    if (won) playWin();
+  }, [won]);
+
   function pointInRect(x: number, y: number, el: HTMLElement | null): boolean {
     if (!el) return false;
     const r = el.getBoundingClientRect();
@@ -126,6 +131,7 @@ export function Pond() {
 
     const padId = padAtPoint(x, y);
     if (padId) {
+      if (placements[frogId] !== padId) playPop();
       placeOnPad(frogId, padId);
       return;
     }

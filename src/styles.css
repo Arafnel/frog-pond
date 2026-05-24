@@ -162,7 +162,7 @@
   }
 
   body {
-    background: var(--gradient-sky);
+    background: var(--background);
     color: var(--color-foreground);
     font-family: var(--font-body);
     -webkit-tap-highlight-color: transparent;
@@ -180,6 +180,17 @@
   .font-body { font-family: var(--font-body); }
   .shadow-soft { box-shadow: var(--shadow-soft); }
   .shadow-pop { box-shadow: var(--shadow-pop); }
+
+  .pond-playfield {
+    background: oklch(0.72 0.09 195 / 0.35);
+    backdrop-filter: blur(2px);
+  }
+
+  .select-none-game,
+  .select-none-game * {
+    user-select: none;
+    -webkit-user-select: none;
+  }
 
   @keyframes float-bob {
     0%, 100% { transform: translateY(0) rotate(-1deg); }

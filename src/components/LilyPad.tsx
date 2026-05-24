@@ -4,11 +4,13 @@ import { forwardRef } from "react";
 interface Props {
   size?: number;
   highlight?: boolean;
+  swapTarget?: boolean;
+  occupied?: boolean;
   flower?: boolean;
 }
 
 export const LilyPad = forwardRef<HTMLDivElement, Props>(function LilyPad(
-  { size = 110, highlight = false, flower = false },
+  { size = 110, highlight = false, swapTarget = false, occupied = false, flower = false },
   ref,
 ) {
   return (
@@ -17,18 +19,21 @@ export const LilyPad = forwardRef<HTMLDivElement, Props>(function LilyPad(
       style={{ width: size, height: size }}
       className="relative flex items-center justify-center"
     >
-      {/* ripple ring when highlighted */}
       {highlight && (
         <span
           className="absolute inset-0 rounded-full animate-ripple"
-          style={{ background: "oklch(0.95 0.04 150 / 0.6)" }}
+          style={{
+            background: swapTarget
+              ? "oklch(0.88 0.12 85 / 0.65)"
+              : "oklch(0.95 0.04 150 / 0.6)",
+          }}
         />
       )}
       <motion.svg
         viewBox="0 0 120 120"
         width={size}
         height={size}
-        animate={{ rotate: [0, 2, -2, 0] }}
+        animate={{ rotate: [0, 2, -2, 0], opacity: occupied ? 0.72 : 1 }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
         style={{ filter: "drop-shadow(0 8px 10px oklch(0.30 0.10 200 / 0.30))" }}
       >
